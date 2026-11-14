@@ -7,6 +7,7 @@ public class Pelicula {
     private Clasificacion clasificacion;
     private EstadoPelicula estado;
 
+    //guarda los datos y deja la pelicula DISPONIBLE por defecto
     public Pelicula(String codigo, String nombre, String genero, int duracionMinutos, Clasificacion clasificacion) {
         this.codigo = codigo;
         this.nombre = nombre;
@@ -15,6 +16,7 @@ public class Pelicula {
         this.clasificacion = clasificacion;
         this.estado = EstadoPelicula.DISPONIBLE;
     }
+
 
     public String getCodigo() {
         return codigo;
@@ -62,5 +64,29 @@ public class Pelicula {
 
     public void setEstado(EstadoPelicula estado) {
         this.estado = estado;
+    }
+
+    // Pone la pelicula en estado DISPONIBLE
+    public void habilitar() {
+        this.estado = EstadoPelicula.DISPONIBLE;
+    }
+
+    // Pone la pelicula en estado NO_DISPONIBLE
+    public void deshabilitar() {
+        this.estado = EstadoPelicula.NO_DISPONIBLE;
+    }
+
+    // Devuelve true si la pelicula esta DISPONIBLE
+    public boolean estaDisponible() {
+        return estado == EstadoPelicula.DISPONIBLE;
+    }
+
+    @Override
+    public String toString() {
+        return "Pelicula: " + codigo + " - " + nombre
+                + "\nGenero: " + genero
+                + "\nDuracion: " + duracionMinutos + " minutos"
+                + "\nClasificacion: " + clasificacion
+                + "\nEstado: " + estado;
     }
 }

@@ -19,7 +19,6 @@ public class Sala {
         generarAsientos(filas, asientosPorFila);
     }
 
-    // ---------- Getters y setters ----------
 
     public String getCodigo() {
         return codigo;
@@ -92,7 +91,6 @@ public class Sala {
         return estado == EstadoSala.DISPONIBLE;
     }
 
-    // ---------- Impresion ----------
 
     @Override
     public String toString() {
