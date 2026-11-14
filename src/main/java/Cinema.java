@@ -27,6 +27,22 @@ public class Cinema {
         this.nombre = nombre;
     }
 
+    public List<Pelicula> getListaPeliculas() {
+        return listaPeliculas;
+    }
+
+    public List<Sala> getListaSalas() {
+        return listaSalas;
+    }
+
+    public List<Funcion> getListaFunciones() {
+        return listaFunciones;
+    }
+
+    public List<Cliente> getListaClientes() {
+        return listaClientes;
+    }
+
     public List<Venta> getVentas() {
         return listaVentas;
     }

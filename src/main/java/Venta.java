@@ -10,14 +10,22 @@ public class Venta {
     private double valorPagado;
     private EstadoVenta estado;
 
-    public Venta(String codigo, Cliente cliente, Funcion funcion, Asiento asiento, double valorPagado) {
+    public Venta(String codigo, Cliente cliente, Funcion funcion,
+                 Asiento asiento, LocalDateTime fechaHora, double valorPagado) {
+
         this.codigo = codigo;
         this.cliente = cliente;
         this.funcion = funcion;
         this.asiento = asiento;
+        this.fechaHora = fechaHora;
         this.valorPagado = valorPagado;
-        this.fechaHora = LocalDateTime.now();
         this.estado = EstadoVenta.ACTIVA;
+    }
+
+    public Venta(String codigo, Cliente cliente, Funcion funcion,
+                 Asiento asiento, double valorPagado) {
+
+        this(codigo, cliente, funcion, asiento, LocalDateTime.now(), valorPagado);
     }
 
     public String getCodigo() {

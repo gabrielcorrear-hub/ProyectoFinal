@@ -14,7 +14,9 @@ public class Funcion {
     private EstadoFuncion estado;
     private ArrayList<Asiento> listaAsientos;
 
-    public Funcion(String codigo, Pelicula pelicula, Sala sala, LocalDate fecha, LocalTime hora, double valorBase) {
+    public Funcion(String codigo, Pelicula pelicula, Sala sala,
+                   LocalDate fecha, LocalTime hora, double valorBase) {
+
         this.codigo = codigo;
         this.pelicula = pelicula;
         this.sala = sala;
@@ -22,7 +24,14 @@ public class Funcion {
         this.hora = hora;
         this.valorBase = valorBase;
         this.estado = EstadoFuncion.PROGRAMADA;
-        listaAsientos = new ArrayList<>();
+
+        this.listaAsientos = new ArrayList<>();
+
+        for (Asiento asientoSala : sala.getAsientos()) {
+            this.listaAsientos.add(
+                    new Asiento(asientoSala.getFila(), asientoSala.getNumero())
+            );
+        }
     }
 
     public String getCodigo() {

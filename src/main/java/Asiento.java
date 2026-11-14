@@ -26,6 +26,7 @@ public class Asiento {
 
     public void setFila(char fila) {
         this.fila = fila;
+        this.codigo = "" + fila + numero;
     }
 
     public int getNumero() {
@@ -34,6 +35,7 @@ public class Asiento {
 
     public void setNumero(int numero) {
         this.numero = numero;
+        this.codigo = "" + fila + numero;
     }
 
     public EstadoAsiento getEstado() {
