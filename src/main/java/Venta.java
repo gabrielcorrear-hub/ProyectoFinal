@@ -10,13 +10,14 @@ public class Venta {
     private double valorPagado;
     private EstadoVenta estado;
 
+    // Crea el registro de la venta y le pone la fecha y hora exacta del sistema.
     public Venta(String codigo, Cliente cliente, Funcion funcion, Asiento asiento, double valorPagado) {
         this.codigo = codigo;
         this.cliente = cliente;
         this.funcion = funcion;
         this.asiento = asiento;
         this.valorPagado = valorPagado;
-        this.fechaHora = LocalDateTime.now(); // Se registra automáticamente
+        this.fechaHora = LocalDateTime.now();
         this.estado = EstadoVenta.ACTIVA;
     }
 
@@ -35,33 +36,22 @@ public class Venta {
     public EstadoVenta getEstado() { return estado; }
     public void setEstado(EstadoVenta estado) { this.estado = estado; }
 
-    public void cancelar() {
-        this.estado = EstadoVenta.CANCELADA;
-    }
+    // Pasa la venta a estado CANCELADA.
+    public void cancelar() { this.estado = EstadoVenta.CANCELADA; }
 
-    public boolean estaActiva() {
-        return estado == EstadoVenta.ACTIVA;
-    }
+    // Comprueba si el ticket sigue siendo valido.
+    public boolean estaActiva() { return estado == EstadoVenta.ACTIVA; }
 
+    // Devuelve el texto del ticket formateado para imprimir.
     public String generarEntrada() {
-        return "===== ENTRADA CINEMAUQ =====\n"
-                + "Codigo de venta: " + codigo + "\n"
-                + "Cliente: " + cliente.getNombre() + "\n"
-                + "Identificacion: " + cliente.getIdentificacion() + "\n"
-                + "Pelicula: " + funcion.getPelicula().getNombre() + "\n"
-                + "Sala: " + funcion.getSala().getNombre() + "\n"
-                + "Fecha: " + funcion.getFecha() + "\n"
-                + "Hora: " + funcion.getHora() + "\n"
-                + "Asiento: " + asiento.getCodigo() + "\n"
-                + "Tipo de entrada: " + cliente.getTipoCliente() + "\n"
-                + "Valor pagado: $" + valorPagado + "\n"
-                + "Estado: " + estado + "\n"
-                + "=============================";
-    }
-
-    @Override
-    public String toString() {
-        return "Venta: " + codigo + " | Cliente: " + cliente.getNombre()
-                + " | Asiento: " + asiento.getCodigo() + " | Estado: " + estado;
+        return "===== ENTRADA CINEMAUQ =====\n" +
+                "Codigo de venta: " + codigo + "\n" +
+                "Cliente: " + cliente.getNombre() + "\n" +
+                "Pelicula: " + funcion.getPelicula().getNombre() + "\n" +
+                "Sala: " + funcion.getSala().getNombre() + "\n" +
+                "Asiento: " + asiento.getCodigo() + "\n" +
+                "Valor pagado: $" + valorPagado + "\n" +
+                "Estado: " + estado + "\n" +
+                "=============================";
     }
 }

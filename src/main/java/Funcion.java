@@ -14,6 +14,7 @@ public class Funcion {
     private EstadoFuncion estado;
     private ArrayList<Asiento> listaAsientos;
 
+    // Crea la funcion y hace una COPIA independiente de los asientos de la sala.
     public Funcion(String codigo, Pelicula pelicula, Sala sala, LocalDate fecha, LocalTime hora, double valorBase) {
         this.codigo = codigo;
         this.pelicula = pelicula;
@@ -24,7 +25,6 @@ public class Funcion {
         this.estado = EstadoFuncion.PROGRAMADA;
 
         this.listaAsientos = new ArrayList<>();
-        // Copia independiente de los asientos de la sala
         for (Asiento asientoDeLaSala : sala.getAsientos()) {
             this.listaAsientos.add(asientoDeLaSala.copiar());
         }
@@ -46,8 +46,7 @@ public class Funcion {
     public void setEstado(EstadoFuncion estado) { this.estado = estado; }
     public List<Asiento> getAsientos() { return listaAsientos; }
 
-    //  Métodos de Asientos
-
+    // Busca un asiento en especifico dentro de esta funcion usando su codigo.
     public Asiento buscarAsiento(String codigoAsiento) {
         for (Asiento asientoDeLaFuncion : listaAsientos) {
             if (asientoDeLaFuncion.getCodigo().equals(codigoAsiento)) {
@@ -57,67 +56,61 @@ public class Funcion {
         return null;
     }
 
-    // Ocupa el asiento si está disponible y lo devuelve. Si no, devuelve null.
+    // Si el asiento esta libre, lo ocupa y lo devuelve. Si no, devuelve null.
     public Asiento ocuparAsiento(String codigoAsiento) {
-        Asiento asiento = buscarAsiento(codigoAsiento);
-        if (asiento != null && asiento.estaDisponible()) {
-            asiento.ocupar();
-            return asiento;
+        Asiento asientoBuscado = buscarAsiento(codigoAsiento);
+        if (asientoBuscado != null && asientoBuscado.estaDisponible()) {
+            asientoBuscado.ocupar();
+            return asientoBuscado;
         }
         return null;
     }
 
-    // Libera el asiento (lo pone DISPONIBLE)
+    // Pone el asiento como DISPONIBLE de nuevo.
     public void liberarAsiento(String codigoAsiento) {
-        Asiento asiento = buscarAsiento(codigoAsiento);
-        if (asiento != null) {
-            asiento.liberar();
+        Asiento asientoBuscado = buscarAsiento(codigoAsiento);
+        if (asientoBuscado != null) {
+            asientoBuscado.liberar();
         }
     }
 
+    // Crea una lista solo con los asientos que aun se pueden vender.
     public List<Asiento> obtenerAsientosDisponibles() {
-        List<Asiento> disponibles = new ArrayList<>();
+        List<Asiento> asientosDisponibles = new ArrayList<>();
         for (Asiento asientoDeLaFuncion : listaAsientos) {
             if (asientoDeLaFuncion.estaDisponible()) {
-                disponibles.add(asientoDeLaFuncion);
+                asientosDisponibles.add(asientoDeLaFuncion);
             }
         }
-        return disponibles;
+        return asientosDisponibles;
     }
 
+    // Cuenta cuantos asientos libres quedan.
     public int contarDisponibles() {
         return obtenerAsientosDisponibles().size();
     }
 
+    // Cuenta cuantos asientos vendidos hay.
     public int contarOcupados() {
         return listaAsientos.size() - contarDisponibles();
     }
 
+    // Devuelve true si aun hay sillas para vender.
     public boolean hayAsientosDisponibles() {
         return contarDisponibles() > 0;
     }
 
-    // --- Métodos de Negocio ---
-
+    // Suma el precio base de la funcion + el recargo del tipo de cliente.
     public double calcularValor(TipoCliente tipoCliente) {
         return this.valorBase + tipoCliente.getValor();
     }
 
-    public void cancelar() {
-        this.estado = EstadoFuncion.CANCELADA;
-    }
-
-    public void finalizar() {
-        this.estado = EstadoFuncion.FINALIZADA;
-    }
-
-    public boolean estaProgramada() {
-        return estado == EstadoFuncion.PROGRAMADA;
-    }
+    public void cancelar() { this.estado = EstadoFuncion.CANCELADA; }
+    public void finalizar() { this.estado = EstadoFuncion.FINALIZADA; }
+    public boolean estaProgramada() { return estado == EstadoFuncion.PROGRAMADA; }
 
     @Override
     public String toString() {
-        return "Funcion: " + codigo + " | Pelicula: " + pelicula.getNombre()
-                + " | Sala: " + sala.getNombre() + " | Disponibles: " + contarDisponibles();
+        return "Funcion: " + codigo + " | Pelicula: " + pelicula.getNombre() + " | Sala: " + sala.getNombre() + " | Disponibles: " + contarDisponibles();
     }
 }
