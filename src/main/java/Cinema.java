@@ -25,10 +25,14 @@ public class Cinema {
     public void setNombre(String nombre) { this.nombre = nombre; }
     public List<Venta> getVentas() { return listaVentas; }
 
+
+    // pelis
+
     public void registrarPelicula(Pelicula pelicula) {
-        if (buscarPelicula(pelicula.getCodigo()) == null) {
-            listaPeliculas.add(pelicula);
+        if (buscarPelicula(pelicula.getCodigo()) != null) {
+            throw new PeliculaDuplicadaException("Ya existe una pelicula con el codigo: " + pelicula.getCodigo());
         }
+        listaPeliculas.add(pelicula);
     }
 
     public Pelicula buscarPelicula(String codigo) {
@@ -55,10 +59,14 @@ public class Cinema {
 
     public List<Pelicula> consultarPeliculas() { return listaPeliculas; }
 
+
+    // salas
+
     public void registrarSala(Sala sala) {
-        if (buscarSala(sala.getCodigo()) == null) {
-            listaSalas.add(sala);
+        if (buscarSala(sala.getCodigo()) != null) {
+            throw new SalaDuplicadaException("Ya existe una sala con el codigo: " + sala.getCodigo());
         }
+        listaSalas.add(sala);
     }
 
     public Sala buscarSala(String codigo) {
@@ -83,16 +91,25 @@ public class Cinema {
 
     public List<Sala> consultarSalas() { return listaSalas; }
 
+    // funciones
+
     public Funcion programarFuncion(String codigo, String codPelicula, String codSala, LocalDate fecha, LocalTime hora, double valorBase) {
         Pelicula pelicula = buscarPelicula(codPelicula);
         Sala sala = buscarSala(codSala);
 
-        if (pelicula != null && sala != null && sala.estaDisponible()) {
-            Funcion nuevaFuncion = new Funcion(codigo, pelicula, sala, fecha, hora, valorBase);
-            listaFunciones.add(nuevaFuncion);
-            return nuevaFuncion;
+        if (pelicula == null) {
+            throw new FuncionNoEncontradaException("La pelicula " + codPelicula + " no existe.");
         }
-        return null;
+        if (sala == null) {
+            throw new SalaNoDisponibleException("La sala " + codSala + " no existe.");
+        }
+        if (!sala.estaDisponible()) {
+            throw new SalaNoDisponibleException("La sala " + codSala + " esta fuera de servicio.");
+        }
+
+        Funcion nuevaFuncion = new Funcion(codigo, pelicula, sala, fecha, hora, valorBase);
+        listaFunciones.add(nuevaFuncion);
+        return nuevaFuncion;
     }
 
     public Funcion buscarFuncion(String codigo) {
@@ -117,6 +134,9 @@ public class Cinema {
         return new ArrayList<>();
     }
 
+
+    //clienets ventas
+
     public void registrarCliente(Cliente cliente) { listaClientes.add(cliente); }
 
     public Cliente buscarCliente(String identificacion) {
@@ -130,10 +150,20 @@ public class Cinema {
         Funcion funcion = buscarFuncion(codFuncion);
         Cliente cliente = buscarCliente(idCliente);
 
-        if (funcion == null || cliente == null) return null;
+        if (funcion == null) {
+            throw new FuncionNoEncontradaException("La funcion " + codFuncion + " no existe.");
+        }
+        if (cliente == null) {
+            throw new IllegalArgumentException("El cliente con identificacion " + idCliente + " no existe.");
+        }
+        if (!funcion.hayAsientosDisponibles()) {
+            throw new SinAsientosDisponiblesException("No hay asientos disponibles para esta funcion.");
+        }
 
         Asiento asientoOcupado = funcion.ocuparAsiento(codAsiento);
-        if (asientoOcupado == null) return null;
+        if (asientoOcupado == null) {
+            throw new AsientoOcupadoException("El asiento " + codAsiento + " ya esta ocupado o no existe.");
+        }
 
         double valorPagado = funcion.calcularValor(cliente.getTipoCliente());
         String codVenta = "V-" + (listaVentas.size() + 1);
@@ -146,10 +176,16 @@ public class Cinema {
 
     public void cancelarVenta(String codVenta) {
         Venta v = buscarVenta(codVenta);
-        if (v != null && v.estaActiva()) {
-            v.cancelar();
-            v.getFuncion().liberarAsiento(v.getAsiento().getCodigo());
+
+        if (v == null) {
+            throw new VentaNoEncontradaException("La venta " + codVenta + " no existe.");
         }
+        if (!v.estaActiva()) {
+            throw new IllegalArgumentException("La venta " + codVenta + " ya se encuentra cancelada.");
+        }
+
+        v.cancelar();
+        v.getFuncion().liberarAsiento(v.getAsiento().getCodigo());
     }
 
     public Venta buscarVenta(String codVenta) {
